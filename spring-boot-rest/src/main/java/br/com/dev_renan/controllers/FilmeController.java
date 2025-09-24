@@ -1,5 +1,6 @@
 package br.com.dev_renan.controllers;
 
+import br.com.dev_renan.model.Avaliacao;
 import br.com.dev_renan.model.Filme;
 import br.com.dev_renan.repository.AvaliacaoRepository;
 import br.com.dev_renan.repository.FilmeRepository;
@@ -11,7 +12,6 @@ import java.util.List;
 
 @RestController // O spring idantificar a classe como um controlador REST
 public class FilmeController {
-
     @Autowired
     private FilmeRepository filmeRepository;
 
@@ -57,5 +57,47 @@ public class FilmeController {
         filmeRepository.deleteById(id);
 
         return new ResponseEntity<String>("Filme deletado com sucesso!", HttpStatus.OK);
+    }
+
+    //======================================================================
+
+    @GetMapping(value = "/listaravaliacoes")
+    @ResponseBody
+    public ResponseEntity<List<Avaliacao>> listarAvaliacoes() {
+
+        List<Avaliacao> avaliacao = avaliacaoRepository.findAll();
+
+        return new ResponseEntity<List<Avaliacao>>(avaliacao, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/salvaravaliacao")
+    @ResponseBody
+    public ResponseEntity<Avaliacao> salvarAvaliacao(@RequestBody Avaliacao avaliacao) {
+
+        Avaliacao sAvaliacao = avaliacaoRepository.save(avaliacao);
+
+        return new ResponseEntity<Avaliacao>(sAvaliacao, HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/atualizaravaliacao")
+    @ResponseBody
+    public ResponseEntity<?> atualizaravaliacao(@RequestBody Avaliacao avaliacao) {
+
+        if (avaliacao.getId() == null) {
+            return new ResponseEntity<String>("Por favor, informe o Id!", HttpStatus.OK);
+        }
+
+        Avaliacao aAvaliacao = avaliacaoRepository.saveAndFlush(avaliacao);
+
+        return new ResponseEntity<Avaliacao>(aAvaliacao, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/deletaravaliacao")
+    @ResponseBody
+    public ResponseEntity<String> deletarAvaliacao(@RequestParam Long id) {
+
+        avaliacaoRepository.deleteById(id);
+
+        return new ResponseEntity<String>("Avaliação deletada com sucesso!", HttpStatus.OK);
     }
 }
