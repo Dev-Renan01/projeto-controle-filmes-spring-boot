@@ -110,7 +110,7 @@ public class FilmeController {
 
         List<Filme> filmes = filmeRepository.findByTituloContaining(trecho);
 
-        if(filmes.isEmpty()){
+        if (filmes.isEmpty()) {
             return new ResponseEntity<String>("Nenhum filme encontrado com esse trecho.", HttpStatus.OK);
         }
 
@@ -119,12 +119,12 @@ public class FilmeController {
 
     @GetMapping(value = "/buscarFilmePorGenero")
     @ResponseBody
-    public ResponseEntity<?> buscarFilmePorGenero(@RequestParam String genero){
+    public ResponseEntity<?> buscarFilmePorGenero(@RequestParam String genero) {
 
         List<Filme> filmes = filmeRepository.findByGenero(genero);
 
-        if(filmes.isEmpty()){
-        return new ResponseEntity<String>("Nenhum filme encontrado com esse gênero", HttpStatus.NOT_FOUND);
+        if (filmes.isEmpty()) {
+            return new ResponseEntity<String>("Nenhum filme encontrado com esse gênero", HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<List<Filme>>(filmes, HttpStatus.OK);
@@ -132,14 +132,28 @@ public class FilmeController {
 
     @GetMapping(value = "/buscarFilmePorAno")
     @ResponseBody
-    public ResponseEntity<?> buscarFilmePorAno(@RequestParam Integer ano){
+    public ResponseEntity<?> buscarFilmePorAno(@RequestParam Integer ano) {
 
         List<Filme> filmes = filmeRepository.findByAnoLancamento(ano);
 
-        if(filmes.isEmpty()){
+        if (filmes.isEmpty()) {
             return new ResponseEntity<String>("Nenhum filme encontrado no ano informado", HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<List<Filme>>(filmes, HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/buscarAvaliacaoPorUsuario")
+    @ResponseBody
+    public ResponseEntity<?> buscarAvaliacaoPorUsuario(@RequestParam String usuario) {
+
+        List<Avaliacao> avaliacao = avaliacaoRepository.findByUsuario(usuario);
+
+        if (avaliacao.isEmpty()) {
+            return new ResponseEntity<String>("Não existe avaliações feita por esse usuário", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<List<Avaliacao>>(avaliacao, HttpStatus.OK);
+
     }
 }
