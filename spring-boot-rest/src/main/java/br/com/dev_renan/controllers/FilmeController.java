@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Locale;
 
 @RestController // O spring idantificar a classe como um controlador REST
 public class FilmeController {
@@ -99,5 +100,46 @@ public class FilmeController {
         avaliacaoRepository.deleteById(id);
 
         return new ResponseEntity<String>("Avaliação deletada com sucesso!", HttpStatus.OK);
+    }
+
+    //================ CONSULTAS PERSONALIZADAS ===================
+
+    @GetMapping(value = "/buscarPorTrechoTitulo")
+    @ResponseBody
+    public ResponseEntity<?> buscarPorTrechoTitulo(@RequestParam String trecho) {
+
+        List<Filme> filmes = filmeRepository.findByTituloContaining(trecho);
+
+        if(filmes.isEmpty()){
+            return new ResponseEntity<String>("Nenhum filme encontrado com esse trecho.", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<List<Filme>>(filmes, HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value = "/buscarFilmePorGenero")
+    @ResponseBody
+    public ResponseEntity<?> buscarFilmePorGenero(@RequestParam String genero){
+
+        List<Filme> filmes = filmeRepository.findByGenero(genero);
+
+        if(filmes.isEmpty()){
+        return new ResponseEntity<String>("Nenhum filme encontrado com esse gênero", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<List<Filme>>(filmes, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/buscarFilmePorAno")
+    @ResponseBody
+    public ResponseEntity<?> buscarFilmePorAno(@RequestParam Integer ano){
+
+        List<Filme> filmes = filmeRepository.findByAnoLancamento(ano);
+
+        if(filmes.isEmpty()){
+            return new ResponseEntity<String>("Nenhum filme encontrado no ano informado", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<List<Filme>>(filmes, HttpStatus.OK);
     }
 }
